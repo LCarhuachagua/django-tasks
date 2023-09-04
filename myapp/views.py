@@ -3,6 +3,7 @@ from django.http import HttpResponse, JsonResponse # Importar el módulo HttpRes
 from .models import Project, Task # Importar el modelo Project
 from django.shortcuts import get_object_or_404 # Importar el módulo get_object_or_404 de Django
 from .forms import CreateNewTask, CreateNewProject # Importar el formulario CreateNewTask de Django
+import json
 
 # Utilities
 from datetime import datetime
@@ -90,9 +91,18 @@ def hi(request):
     #return HttpResponse("prueba")
     numbers = request.GET['numbers']
     numbers = list(numbers.split(","))
+    numbers = [int(i) for i in numbers]
     orderMin(numbers)
-    return HttpResponse(str(numbers))
-
+    data = {
+        'status': 'ok',
+        'numbers': numbers,
+        'message': 'Integers sorted successfully.'
+    }
+    #return HttpResponse(str(numbers), content_type='application/json')
+    return HttpResponse(
+        json.dumps(data, indent=4), content_type='application/json'
+        )
+        
 def orderMin(numbers = []):
     for i in range(len(numbers)):
         for j in range(len(numbers)):
